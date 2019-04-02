@@ -9,7 +9,6 @@
         title: __('Google Photos Share', 'GB'),
         icon: 'images-alt',
         category: 'common',
-
         attributes: {
             content: {
                 type: 'array',
@@ -21,16 +20,27 @@
         edit: function(props) {
             var content = props.attributes.content;
 
-            function onChangeContent(newContent) {
-                props.setAttributes({ content: newContent });
-            }
-
             return el(
-                'textarea', {
-                    className: props.className,
-                    onChange: onChangeContent,
-                    value: content
-                }
+                'div', { className: 'lmgps-block-content' },
+                el('div', { className: 'lmgps-label' },
+                    el('span', {
+                        className: 'dashicons dashicons-images-alt'
+                    }),
+                    el('span', {
+                        className: 'lmgps-label'
+                    }, __('Google Photos Share', 'GB')),
+                ),
+                el('div', { className: 'lmgps-instructions' },
+                    __('Choose an existing Google Photos Share, or use a new one.', 'GB'),
+                ),
+                el('div', { className: 'lmgps-btns' },
+                    el('a', {
+                        className: 'components-button is-button is-default is-large lmgps-existing'
+                    }, __('Existing Share', 'GB')),
+                    el('a', {
+                        className: 'components-button is-button is-default is-large lmgps-new'
+                    }, __('New Share', 'GB'))
+                )
             );
         },
 

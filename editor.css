@@ -2,9 +2,36 @@
  * Note that these styles are loaded *after* common styles, so that
  * editor-specific styles using the same selectors will take precedence.
  */
-.wp-block-gutenberg-examples-example-03-editable {
-  color: green;
-  background: #cfc;
-  border: 2px solid #9c9;
-  padding: 20px;
+
+.lmgps-block-content {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 1em;
+    min-height: 200px;
+    width: 100%;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+    font-size: 13px;
+    background: rgba(139, 139, 150, .1);
+}
+
+.lmgps-block-content .lmgps-label {
+    font-weight: 600;
+    margin-bottom: 1em;
+}
+
+.lmgps-block-content .lmgps-label .dashicons {
+    margin-right: 1ch;
+}
+
+.lmgps-block-content .lmgps-instructions {
+    margin-bottom: 1em;
+}
+
+.lmgps-block-content .lmgps-btns a.is-button {
+    margin: 0 2px;
 }
