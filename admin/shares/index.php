@@ -1,37 +1,70 @@
 <?php
+/**********************************************************************************
+ * SETTINGS PAGE: Shares list subpage
+ *********************************************************************************/
 
 if(!class_exists('WP_List_Table')){
   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
+add_thickbox();
 
 function lmgps_plugin_menu_shares() {
   global $wpdb;
 
+  // Permissions check
   if (!current_user_can('manage_options')) {
     wp_die(__('You do not have sufficient permissions to access this page!'));
   }
 
+  // Delete entry, if neccesary
   if (isset($_REQUEST['delete']) && isset($_REQUEST['id'])) {
-    // Delete the entry with the specified ID
     $wpdb->delete(LMGPS_TABLE_NAME, array('id' => $_REQUEST['id']));
   }
 
   //Create an instance of our package class
-    $table = new LMGPS_Menu_Table();
-    //Fetch, prepare, sort, and filter our data...
-    $table->prepare_items();
+  $table = new LMGPS_Menu_Table();
+  $table->prepare_items();
 
-  ?>
-  <div class="wrap">
-    <h1><span class="dashicons dashicons-images-alt"></span>&nbsp;Google Photos Share - Shares</h1>
+/** TEMPLATE *********************************************************************/
+?>
 
-    <form id="lmgps-menu-filter" method="get">
-      <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-      <?php $table->display() ?>
+<div id="tb-new-share-container" style="display: none;">
+  <div class="wrap lmgps-new-share-container">
+    <form class="new-share-form">
+      <p>Write your shared Google Photos URL in the form below.</p>
+
+      <table class="form-table">
+        <tbody>
+          <tr class="form-field form-required">
+            <th scope="row">
+              <label for="share_url">URL <span class="description">(required)</span></label>
+            </th>
+            <td>
+              <input name="share_url" type="text" autocorrect="off" aria-required="true" placeholder="https://photos.app.goo.gl/xxxxxxxxxxxxxxxxx">
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      <p class="submit">
+        <input type="submit" class="button button-primary" value="Fetch Share">
+      </p>
     </form>
-
   </div>
-  <?php
+</div>
+
+<div class="wrap lmgps-admin-shares">
+  <h1 class="wp-heading-inline"><span class="dashicons dashicons-images-alt"></span>&nbsp;Google Photos Share - Shares</h1>
+  <a href="#TB_inline?&width=600&height=550&inlineId=tb-new-share-container" title="Add New Google Photos Share" class="thickbox page-title-action">Add New</a>
+  <hr class="wp-header-end">
+
+  <form id="lmgps-menu-filter" method="get">
+    <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+    <?php $table->display() ?>
+  </form>
+</div>
+
+<?php
+/** END OF TEMPLATE **************************************************************/
 }
 
 /**
