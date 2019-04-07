@@ -28,9 +28,10 @@ function lmgps_plugin_menu_shares() {
 /** TEMPLATE *********************************************************************/
 ?>
 
-<div id="tb-new-share-container" style="display: none;">
+<!-- Add new Share Modal window contents -->
+<div id="tb-lmgps-new-share-container" style="display: none;">
   <div class="wrap lmgps-new-share-container">
-    <form class="new-share-form">
+    <form id="lmgps-new-share-form">
       <p>Write your shared Google Photos URL in the form below.</p>
 
       <table class="form-table">
@@ -46,15 +47,32 @@ function lmgps_plugin_menu_shares() {
         </tbody>
         </table>
       <p class="submit">
-        <input type="submit" class="button button-primary" value="Fetch Share">
+        <input type="submit" class="button button-primary disabled" disabled="disabled" value="Fetch Share">
       </p>
+      <div class="error-alert" style="display: none;"></div>
+    </form>
+
+    <form id="lmgps-new-share-save-form" style="display: none;">
+      <input type="hidden" class="photo_urls">
+      <p class="message"></p>
+      <p class="submit">
+        <input type="submit" class="button button-primary" value="Save Share to Wordpress">
+      </p>
+      <p>These are the extracted photos:</p>
+      <div class="photos-container"></div>
     </form>
   </div>
 </div>
 
+<!-- Main page contents -->
 <div class="wrap lmgps-admin-shares">
   <h1 class="wp-heading-inline"><span class="dashicons dashicons-images-alt"></span>&nbsp;Google Photos Share - Shares</h1>
-  <a href="#TB_inline?&width=600&height=550&inlineId=tb-new-share-container" title="Add New Google Photos Share" class="thickbox page-title-action">Add New</a>
+  <a href="#TB_inline?&width=800&height=600&inlineId=tb-lmgps-new-share-container"
+     title="Add New Google Photos Share"
+     id="new-share-open-modal-btn"
+     class="thickbox page-title-action">
+    Add New
+  </a>
   <hr class="wp-header-end">
 
   <form id="lmgps-menu-filter" method="get">

@@ -13,15 +13,16 @@
 global $wpdb;
 
 /** Constants */
-define("LMGPS_ROOT_DIR", WP_PLUGIN_DIR . '/google-photos-share-wp-plugin');
+define('LMGPS_ROOT_DIR', WP_PLUGIN_DIR . '/google-photos-share-wp-plugin');
 define('LMGPS_TABLE_NAME', $wpdb->prefix . 'lm_google_photo_shares');
 define('LMGPS_MENU_SLUG_SHARES', 'lm-google-photo-shares-menu-shares');
 define('LMGPS_MENU_SLUG_SETTINGS', 'lm-google-photo-shares-menu-settings');
 
 if(!defined('ABSPATH')) die();
 
-require_once(LMGPS_ROOT_DIR . "/init/plugin.php" );
-require_once(LMGPS_ROOT_DIR . "/block/index.php" );
-require_once(LMGPS_ROOT_DIR . "/admin/index.php" );
-require_once(LMGPS_ROOT_DIR . "/admin/shares/index.php" );
-require_once(LMGPS_ROOT_DIR . "/admin/settings/index.php" );
+require_once(LMGPS_ROOT_DIR . '/init/plugin.php');
+require_once(LMGPS_ROOT_DIR . '/block/index.php');
+require_once(LMGPS_ROOT_DIR . '/admin/index.php');
+require_once(LMGPS_ROOT_DIR . '/admin/shares/index.php');
+require_once(LMGPS_ROOT_DIR . '/admin/shares/new_share.php');
+require_once(LMGPS_ROOT_DIR . '/admin/settings/index.php');

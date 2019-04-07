@@ -1,3 +1,12 @@
-.lmgps-new-share-container .new-share-form input[type=text] {
+.lmgps-new-share-container #lmgps-new-share-form input[type=text] {
     width: 100%;
+}
+
+#lmgps-new-share-save-form .photos-container {
+    background: #000;
+}
+
+#lmgps-new-share-save-form .photos-container>div {
+    display: inline-flex;
+    margin: 2px;
 }
