@@ -23,7 +23,11 @@ define('LMGPS_REGEX_PHOTOS', '/\["(https:\/\/.{3}\.googleusercontent\.com\/.{139
 
 if(!defined('ABSPATH')) die();
 
-require_once(LMGPS_ROOT_DIR . '/init/plugin.php');
+/** Initialize plugin's DB */
+include_once LMGPS_ROOT_DIR . '/init/db.php';
+register_activation_hook(__FILE__, 'lmgps_init_plugin_db');
+
+/** Require additional files */
 require_once(LMGPS_ROOT_DIR . '/block/index.php');
 require_once(LMGPS_ROOT_DIR . '/admin/index.php');
 require_once(LMGPS_ROOT_DIR . '/admin/shares/index.php');
