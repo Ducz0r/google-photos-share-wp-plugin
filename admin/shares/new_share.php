@@ -92,7 +92,7 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
   </script> <?php
 }
 
-/** Actual endpoint logic */
+/** Fetch share logic */
 add_action('wp_ajax_lmgps_new_share_submit_form', 'lmgps_new_share_submit_form');
 
 function lmgps_new_share_submit_form() {
@@ -112,13 +112,8 @@ function lmgps_new_share_submit_form() {
     wp_send_json_error('Invalid URL, could not fetch the provided URL.');
   } else {
     // Remove new lines, to a big regex check to find the photo URLs
-    $bodyWithoutNewLines = preg_replace('/(\r\n|\n|\r)/m', '', $response['body']);
-    $rx_result = preg_match_all(
-      '/\["(https:\/\/.{3}\.googleusercontent\.com\/.{139})",\d{1,8},\d{1,8},null,null,null,null,null,null,\[\d{1,16}\]\]/m',
-      $bodyWithoutNewLines,
-      $matches,
-      PREG_SET_ORDER
-    );
+    $bodyWithoutNewLines = preg_replace(LMGPS_REGEX_NEWLINE, '', $response['body']);
+    $rx_result = preg_match_all(LMGPS_REGEX_PHOTOS, $bodyWithoutNewLines, $matches, PREG_SET_ORDER);
 
     if ($rx_result == false || $rx_result < 1) {
       // No photos could be found using regex
@@ -145,6 +140,21 @@ function lmgps_new_share_submit_form() {
       }
     }
   }
+
+  // Finally, end the request
+  wp_die();
+}
+
+/** Save Share logic */
+add_action('wp_ajax_lmgps_new_share_submit_save_form', 'lmgps_new_share_submit_save_form');
+
+function lmgps_new_share_submit_save_form() {
+  global $wpdb;
+
+  // Check for AJAX security origin
+  check_ajax_referer('lmgps-new-share-ajax', 'security');
+
+  // TODO
 
   // Finally, end the request
   wp_die();

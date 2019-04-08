@@ -18,6 +18,9 @@ define('LMGPS_TABLE_NAME', $wpdb->prefix . 'lm_google_photo_shares');
 define('LMGPS_MENU_SLUG_SHARES', 'lm-google-photo-shares-menu-shares');
 define('LMGPS_MENU_SLUG_SETTINGS', 'lm-google-photo-shares-menu-settings');
 
+define('LMGPS_REGEX_NEWLINE', '/(\r\n|\n|\r)/m');
+define('LMGPS_REGEX_PHOTOS', '/\["(https:\/\/.{3}\.googleusercontent\.com\/.{139})",\d{1,8},\d{1,8},null,null,null,null,null,null,\[\d{1,16}\]\]/m');
+
 if(!defined('ABSPATH')) die();
 
 require_once(LMGPS_ROOT_DIR . '/init/plugin.php');
