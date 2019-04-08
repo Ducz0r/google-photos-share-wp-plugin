@@ -13,7 +13,7 @@
 global $wpdb;
 
 /** Constants */
-define('LMGPS_ROOT_DIR', WP_PLUGIN_DIR . '/google-photos-share-wp-plugin');
+define('LMGPS_ROOT_DIR', WP_PLUGIN_DIR . '/google-photos-share');
 define('LMGPS_TABLE_NAME', $wpdb->prefix . 'lm_google_photo_shares');
 define('LMGPS_MENU_SLUG_SHARES', 'lm-google-photo-shares-menu-shares');
 define('LMGPS_MENU_SLUG_SETTINGS', 'lm-google-photo-shares-menu-settings');
