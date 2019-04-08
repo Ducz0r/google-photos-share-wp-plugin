@@ -2,11 +2,31 @@
     width: 100%;
 }
 
+.lmgps-new-share-container .error-alert {
+    margin: 5px 0 15px;
+    border-left: 4px solid #dc3232;
+    border-top: 1px solid #f1f1f1;
+    border-right: 1px solid #f1f1f1;
+    background: #fff;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    padding: 13px 25px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#lmgps-new-share-save-form .photos-label {
+    background-color: #f1f1f1;
+    padding: 10px;
+}
+
 #lmgps-new-share-save-form .photos-container {
-    background: #000;
+    display: flex;
+    justify-content: start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-flow: wrap;
 }
 
 #lmgps-new-share-save-form .photos-container>div {
-    display: inline-flex;
     margin: 2px;
 }

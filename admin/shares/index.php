@@ -53,12 +53,13 @@ function lmgps_plugin_menu_shares() {
     </form>
 
     <form id="lmgps-new-share-save-form" style="display: none;">
-      <input type="hidden" class="photo_urls">
+      <input type="hidden" name="share_url">
+      <input type="hidden" name="photo_urls">
       <p class="message"></p>
       <p class="submit">
         <input type="submit" class="button button-primary" value="Save Share to Wordpress">
       </p>
-      <p>These are the extracted photos:</p>
+      <p class="photos-label">These are the extracted photos:</p>
       <div class="photos-container"></div>
     </form>
   </div>

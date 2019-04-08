@@ -7,9 +7,10 @@
 add_action( 'admin_footer', 'lmgps_plugin_menu_shares_new_share_footer_js' );
 
 function lmgps_plugin_menu_shares_new_share_footer_js() {
-  $ajax_nonce = wp_create_nonce('lmgps-new-share-ajax');
+  $ajax_nonce_1 = wp_create_nonce('lmgps-new-share-fetch-ajax');
+  $ajax_nonce_2 = wp_create_nonce('lmgps-new-share-save-ajax');
   ?>
-  <script type="text/javascript" >
+  <script type="text/javascript">
   jQuery(document).ready(function($) {
     var openModalBtn = $('.lmgps-admin-shares #new-share-open-modal-btn');
 
@@ -20,7 +21,9 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
 
     var saveForm = $('#lmgps-new-share-save-form');
     var saveFormMessage = saveForm.find('.message');
-    var saveFormDataInput = saveForm.find('input[type=hidden].photo_urls');
+    var saveFormDataInput = saveForm.find('input[type=hidden][name=photo_urls]');
+    var saveFormDataShareUrl = saveForm.find('input[type=hidden][name=share_url]');
+    var saveFormDataPhotoUrls = saveForm.find('input[type=hidden][name=photo_urls]');
     var saveFormSubmitBtn = saveForm.find('input[type=submit]');
     var saveFormPhotoContainer = saveForm.find('.photos-container');
 
@@ -33,8 +36,10 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
 
       saveForm.hide();
       saveFormMessage.text('');
-      saveFormDataInput.val('');
-      saveFormPhotoContainer.html('');
+      saveFormDataShareUrl.val('');
+      saveFormDataPhotoUrls.val('');
+      saveFormSubmitBtn.removeAttr('disabled').removeClass('disabled');
+      saveFormPhotoContainer.text('');
     });
 
     inputUrl.off('change paste keyup').on('change paste keyup', function() {
@@ -54,7 +59,7 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
 
       var data = {
         action: 'lmgps_new_share_submit_form',
-        security: '<?php echo $ajax_nonce; ?>',
+        security: '<?php echo $ajax_nonce_1; ?>',
         inputUrl: inputUrl.val()
       };
 
@@ -63,14 +68,18 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
         data: data,
         dataType: 'JSON',
         method: 'POST',
-        success: function(data, textStatus, jqXHR) {
+        success: function(data) {
           if (!data.success) {
             errorAlert.text(data.data).show();
           } else {
             fetchForm.hide();
 
             saveFormMessage.text(data.message);
-            saveFormDataInput.val(JSON.stringify(data.photo_urls));
+            saveFormDataShareUrl.val(inputUrl.val());
+            saveFormDataPhotoUrls.val(JSON.stringify(data.photo_urls));
+            saveFormSubmitBtn.removeAttr('disabled').removeClass('disabled');
+
+            // Display the images
             for (i = 0; i < data.photo_urls.length; i++) {
               var newDiv = document.createElement('div');
               saveFormPhotoContainer[0].appendChild(newDiv);
@@ -78,6 +87,7 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
               newImg.setAttribute('src', data.photo_urls[i] + '=h150-no');
               newDiv.appendChild(newImg);
             }
+
             saveForm.show();
           }
         },
@@ -88,6 +98,28 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
       });
     });
 
+    saveForm.off('submit').on('submit', function(e) {
+      e.preventDefault();
+
+      saveFormSubmitBtn.attr('disabled', 'disabled').addClass('disabled');
+
+      var data = {
+        action: 'lmgps_new_share_submit_save_form',
+        security: '<?php echo $ajax_nonce_2; ?>',
+        shareUrl: saveFormDataShareUrl.val(),
+        photoUrls: JSON.parse(saveFormDataPhotoUrls.val())
+      };
+
+      $.ajax({
+        url: ajaxurl,
+        data: data,
+        dataType: 'JSON',
+        method: 'POST',
+        complete: function() {
+          location.reload;
+        }
+      });
+    });
   });
   </script> <?php
 }
@@ -99,7 +131,7 @@ function lmgps_new_share_submit_form() {
   global $wpdb;
 
   // Check for AJAX security origin
-  check_ajax_referer('lmgps-new-share-ajax', 'security');
+  check_ajax_referer('lmgps-new-share-fetch-ajax', 'security');
 
   // Call the remote endpoint/URL
   $response = wp_remote_get(
@@ -129,8 +161,6 @@ function lmgps_new_share_submit_form() {
         array_push($output['photo_urls'], $val[1]);
       }
 
-      // TODO: Check if such a share entry already exists in DB
-
       // Return the return object
       $output = json_encode($output);
       if(is_array($output)) {
@@ -152,9 +182,26 @@ function lmgps_new_share_submit_save_form() {
   global $wpdb;
 
   // Check for AJAX security origin
-  check_ajax_referer('lmgps-new-share-ajax', 'security');
+  check_ajax_referer('lmgps-new-share-save-ajax', 'security');
 
-  // TODO
+  $photo_urls = $_POST['photoUrls'];
+
+  // Save the user submitted data into the database TODO: ERROR!
+  $result = $wpdb->insert(LMGPS_TABLE_NAME,
+    array(
+      'timestamp' => current_time('mysql'),
+      'share_url' => $_POST['shareUrl'],
+      'photos_count' => sizeof($photo_urls),
+      'photo_urls' => $photo_urls,
+      'status' => 1
+    )
+  );
+
+  if (!$result) {
+    wp_send_json_error('');
+  } else {
+    print_r(json_encode(array('success' => true)));
+  }
 
   // Finally, end the request
   wp_die();
