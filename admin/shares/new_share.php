@@ -40,6 +40,9 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
       saveFormDataPhotoUrls.val('');
       saveFormSubmitBtn.removeAttr('disabled').removeClass('disabled');
       saveFormPhotoContainer.text('');
+
+      // Focus the input after modal window opens
+      setTimeout(function() { inputUrl.focus(); }, 100);
     });
 
     inputUrl.off('change paste keyup').on('change paste keyup', function() {
@@ -76,15 +79,15 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
 
             saveFormMessage.text(data.message);
             saveFormDataShareUrl.val(inputUrl.val());
-            saveFormDataPhotoUrls.val(JSON.stringify(data.photo_urls));
+            saveFormDataPhotoUrls.val(JSON.stringify(data.photoUrls));
             saveFormSubmitBtn.removeAttr('disabled').removeClass('disabled');
 
             // Display the images
-            for (i = 0; i < data.photo_urls.length; i++) {
+            for (i = 0; i < data.photoUrls.length; i++) {
               var newDiv = document.createElement('div');
               saveFormPhotoContainer[0].appendChild(newDiv);
               var newImg = document.createElement('img');
-              newImg.setAttribute('src', data.photo_urls[i] + '=h150-no');
+              newImg.setAttribute('src', data.photoUrls[i] + '=h150-no');
               newDiv.appendChild(newImg);
             }
 
@@ -116,7 +119,7 @@ function lmgps_plugin_menu_shares_new_share_footer_js() {
         dataType: 'JSON',
         method: 'POST',
         complete: function() {
-          location.reload;
+          window.location.reload(false);
         }
       });
     });
@@ -155,10 +158,10 @@ function lmgps_new_share_submit_form() {
       $output['success'] = true;
 
       // Parse the matches
-      $output['photo_urls'] = array();
+      $output['photoUrls'] = array();
       $output['message'] = 'Fetch successful! ' . $rx_result . ' photos were fetched.';
       foreach ($matches as $val) {
-        array_push($output['photo_urls'], $val[1]);
+        array_push($output['photoUrls'], $val[1]);
       }
 
       // Return the return object
@@ -186,19 +189,19 @@ function lmgps_new_share_submit_save_form() {
 
   $photo_urls = $_POST['photoUrls'];
 
-  // Save the user submitted data into the database TODO: ERROR!
+  // Save the user submitted data into the database
   $result = $wpdb->insert(LMGPS_TABLE_NAME,
     array(
       'timestamp' => current_time('mysql'),
       'share_url' => $_POST['shareUrl'],
       'photos_count' => sizeof($photo_urls),
-      'photo_urls' => $photo_urls,
+      'photo_urls' => maybe_serialize($photo_urls),
       'status' => 1
     )
   );
 
   if (!$result) {
-    wp_send_json_error('');
+    wp_send_json_error('Error saving the fetch data to the database.');
   } else {
     print_r(json_encode(array('success' => true)));
   }

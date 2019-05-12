@@ -29,7 +29,12 @@ register_activation_hook(__FILE__, 'lmgps_init_plugin_db');
 
 /** Require additional files */
 require_once(LMGPS_ROOT_DIR . '/block/index.php');
-require_once(LMGPS_ROOT_DIR . '/admin/index.php');
-require_once(LMGPS_ROOT_DIR . '/admin/shares/index.php');
-require_once(LMGPS_ROOT_DIR . '/admin/shares/new_share.php');
-require_once(LMGPS_ROOT_DIR . '/admin/settings/index.php');
+
+if (is_admin()) {
+  require_once(LMGPS_ROOT_DIR . '/admin/index.php');
+  require_once(LMGPS_ROOT_DIR . '/admin/shares/index.php');
+  require_once(LMGPS_ROOT_DIR . '/admin/shares/delete.php');
+  require_once(LMGPS_ROOT_DIR . '/admin/shares/view_photos.php');
+  require_once(LMGPS_ROOT_DIR . '/admin/shares/new_share.php');
+  require_once(LMGPS_ROOT_DIR . '/admin/settings/index.php');
+}

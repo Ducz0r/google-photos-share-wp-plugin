@@ -16,11 +16,6 @@ function lmgps_plugin_menu_shares() {
     wp_die(__('You do not have sufficient permissions to access this page!'));
   }
 
-  // Delete entry, if neccesary
-  if (isset($_REQUEST['delete']) && isset($_REQUEST['id'])) {
-    $wpdb->delete(LMGPS_TABLE_NAME, array('id' => $_REQUEST['id']));
-  }
-
   //Create an instance of our package class
   $table = new LMGPS_Menu_Table();
   $table->prepare_items();
@@ -62,6 +57,14 @@ function lmgps_plugin_menu_shares() {
       <p class="photos-label">These are the extracted photos:</p>
       <div class="photos-container"></div>
     </form>
+  </div>
+</div>
+
+<!-- View Share Photos Modal window contents -->
+<div id="tb-lmgps-view-share-photos-container" style="display: none;">
+  <div class="wrap" id="lmgps-view-share-photos-container">
+    <div class="photos-container"></div>
+  </form>
   </div>
 </div>
 
@@ -107,7 +110,9 @@ class LMGPS_Menu_Table extends WP_List_Table {
     switch($column_name) {
       case 'id':
       case 'timestamp':
+        return $val;
       case 'share_url':
+        return sprintf('<a href="%s" target="_blank">%s</a>', $val, $val);
       case 'photos_count':
         return $val;
       case 'status':
@@ -116,17 +121,30 @@ class LMGPS_Menu_Table extends WP_List_Table {
         } else {
           return 'Inactive';
         }
-      case 'delete':
+      case 'options':
         return '';
       default:
         return print_r($item, true); //Show the whole array for troubleshooting purposes
     }
   }
 
-  function column_delete($item) {
+  function column_options($item) {
     //Build row actions
     $actions = array(
-      'delete' => sprintf('<a href="?page=%s&delete&id=%s">Delete</a>',$_REQUEST['page'], $item['id'])
+      'options' =>
+        sprintf(
+          '<span><a href="#TB_inline?&width=800&height=600&inlineId=tb-lmgps-view-share-photos-container" ' .
+          'title="View Photos for Share %s" ' .
+          'class="thickbox" ' .
+          'data-action="view-photos" data-id="%s">View Photos</a> | </span>',
+          $item['share_url'],
+          $item['id']
+        ) .
+        sprintf(
+          '<span><a href="#" data-action="delete" data-page="%s" data-id="%s">Delete</a></span>',
+          $_REQUEST['page'],
+          $item['id']
+        )
     );
 
     //Return the title contents
@@ -140,7 +158,7 @@ class LMGPS_Menu_Table extends WP_List_Table {
       'share_url' => 'Share URL',
       'photos_count' => '# of shared photos',
       'status'  => 'Status',
-      'delete' => 'Delete'
+      'options' => 'Options'
     );
     return $columns;
   }

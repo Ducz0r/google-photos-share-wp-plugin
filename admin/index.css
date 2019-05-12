@@ -19,7 +19,8 @@
     padding: 10px;
 }
 
-#lmgps-new-share-save-form .photos-container {
+#lmgps-new-share-save-form .photos-container,
+#lmgps-view-share-photos-container .photos-container {
     display: flex;
     justify-content: start;
     flex-direction: row;
@@ -27,6 +28,7 @@
     flex-flow: wrap;
 }
 
-#lmgps-new-share-save-form .photos-container>div {
+#lmgps-new-share-save-form .photos-container>div,
+#lmgps-view-share-photos-container .photos-container>div {
     margin: 2px;
 }
